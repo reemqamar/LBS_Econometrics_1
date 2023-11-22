@@ -1,0 +1,180 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\rqamar\Downloads\Reem_Econometrics_PS3.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}22 Nov 2023, 21:25:01
+
+{com}. do "C:\Users\rqamar\AppData\Local\Temp\STD332c_000000.tmp"
+{txt}
+{com}. clear all
+{res}{txt}
+{com}. 
+. import excel "C:\Users\rqamar\Downloads\PS4data.xls", sheet("data") firstrow
+{res}{text}(8 vars, 220 obs)
+
+{com}. 
+. gen date = yq(year, quarter)
+{txt}
+{com}. format date %tq
+{txt}
+{com}. tsset date
+{res}
+{p 0 15 2}{txt:Time variable: }{res:date}{txt:, }{res:{bind:1948q1}}{txt: to }{res:{bind:2002q4}}{p_end}
+{txt}{col 9}Delta: {res}1 quarter
+{txt}
+{com}. 
+. //Part(a)
+. gen cons= (realconsumptionofnondurables+realconsumptionofservices)/population
+{txt}
+{com}. reg cons l(1/4).cons
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       216
+{txt}{hline 13}{c +}{hline 34}   F(4, 211)       > {res} 99999.00
+{txt}       Model {c |} {res} .004822372         4  .001205593   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 1.2145e-06       211  5.7561e-09   {txt}R-squared       ={res}    0.9997
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.9997
+{txt}       Total {c |} {res} .004823586       215  .000022435   {txt}Root MSE        =   {res} 7.6e-05
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        cons{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}cons {c |}
+{space 9}L1. {c |}{col 14}{res}{space 2} 1.192335{col 26}{space 2} .0673783{col 37}{space 1}   17.70{col 46}{space 3}0.000{col 54}{space 4} 1.059514{col 67}{space 3} 1.325156
+{txt}{space 9}L2. {c |}{col 14}{res}{space 2}-.1281352{col 26}{space 2} .1057009{col 37}{space 1}   -1.21{col 46}{space 3}0.227{col 54}{space 4}-.3365003{col 67}{space 3}   .08023
+{txt}{space 9}L3. {c |}{col 14}{res}{space 2} .1443307{col 26}{space 2}  .105489{col 37}{space 1}    1.37{col 46}{space 3}0.173{col 54}{space 4}-.0636167{col 67}{space 3} .3522782
+{txt}{space 9}L4. {c |}{col 14}{res}{space 2}-.2074643{col 26}{space 2}   .06753{col 37}{space 1}   -3.07{col 46}{space 3}0.002{col 54}{space 4}-.3405841{col 67}{space 3}-.0743444
+{txt}{space 12} {c |}
+{space 7}_cons {c |}{col 14}{res}{space 2} .0000244{col 26}{space 2} .0000192{col 37}{space 1}    1.27{col 46}{space 3}0.207{col 54}{space 4}-.0000136{col 67}{space 3} .0000623
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. test L2.cons=L3.cons=L4.cons=0
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}L2.cons - L3.cons = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} L2.cons - L4.cons = 0{p_end}
+{p 0 7}{space 1}{text:( 3)}{space 1} L2.cons = 0{p_end}
+
+{txt}       F(  3,   211) ={res}    8.41
+{txt}{col 13}Prob > F ={res}    0.0000
+{txt}
+{com}. 
+. //Part(c)
+. gen y=realdisposableincome/pop
+{txt}
+{com}. gen lncons=log(cons/l1.cons)
+{txt}(1 missing value generated)
+
+{com}. gen lny=log(y/l1.y)
+{txt}(1 missing value generated)
+
+{com}. ivregress 2sls lncons (lny=l(2/5).lncons),robust
+{res}
+{txt}{col 1}Instrumental variables 2SLS regression{col 51}Number of obs{col 67}= {res}       214
+{txt}{col 1}{col 51}Wald chi2({res}1{txt}){col 67}= {res}      4.65
+{txt}{col 1}{col 51}Prob > chi2{col 67}= {res}    0.0310
+{txt}{col 1}{col 51}R-squared{col 67}= {res}    0.0685
+{txt}{col 51}Root MSE{col 67}=    {res} .00501
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      lncons{col 14}{c |} Coefficient{col 26}  std. err.{col 38}      z{col 46}   P>|z|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}lny {c |}{col 14}{res}{space 2} .4369273{col 26}{space 2} .2025544{col 37}{space 1}    2.16{col 46}{space 3}0.031{col 54}{space 4}  .039928{col 67}{space 3} .8339266
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0026129{col 26}{space 2} .0011573{col 37}{space 1}    2.26{col 46}{space 3}0.024{col 54}{space 4} .0003447{col 67}{space 3} .0048811
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{p 0 12 34}Endogenous: {res:lny}{p_end}
+{p 0 12 34}Exogenous:{space 1} {res:L2.lncons L3.lncons L4.lncons L5.lncons}{p_end}
+
+{com}. estat firststage // 
+
+{txt}{col 3}First-stage regression summary statistics
+{res}{col 3}{text}{hline 13}{c TT}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}
+{col 16}{c |}{col 29}Adjusted{col 43}Partial{col 57}Robust
+{col 3}{text}    Variable{col 16}{c |}   R-sq.{col 29}   R-sq.{col 41}    R-sq.{col 53}   F(4,209){col 65}  Prob > F
+{res}{col 3}{text}{hline 13}{c +}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}
+{col 3}{text}         lny{col 16}{c |}{result}{space 2}0.0458{col 29}{space 2}0.0276{col 41}{space 3}0.0458{col 53}{space 3} 3.13315{col 65}{space 3}0.0157
+{col 3}{text}{hline 13}{c BT}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}
+
+{res}{txt}
+{com}. 
+. //Part(d)
+. *test the exogeneity
+. reg lny l(2/5).lncons
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       214
+{txt}{hline 13}{c +}{hline 34}   F(4, 209)       = {res}     2.51
+{txt}       Model {c |} {res} .000976974         4  .000244244   {txt}Prob > F        ={res}    0.0430
+{txt}    Residual {c |} {res} .020344536       209  .000097342   {txt}R-squared       ={res}    0.0458
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0276
+{txt}       Total {c |} {res}  .02132151       213  .000100101   {txt}Root MSE        =   {res} .00987
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         lny{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}lncons {c |}
+{space 9}L2. {c |}{col 14}{res}{space 2}-.0185907{col 26}{space 2} .1358824{col 37}{space 1}   -0.14{col 46}{space 3}0.891{col 54}{space 4}-.2864664{col 67}{space 3}  .249285
+{txt}{space 9}L3. {c |}{col 14}{res}{space 2}   .33721{col 26}{space 2} .1367771{col 37}{space 1}    2.47{col 46}{space 3}0.014{col 54}{space 4} .0675704{col 67}{space 3} .6068495
+{txt}{space 9}L4. {c |}{col 14}{res}{space 2} .1703776{col 26}{space 2} .1363402{col 37}{space 1}    1.25{col 46}{space 3}0.213{col 54}{space 4}-.0984006{col 67}{space 3} .4391559
+{txt}{space 9}L5. {c |}{col 14}{res}{space 2}-.2218625{col 26}{space 2} .1351864{col 37}{space 1}   -1.64{col 46}{space 3}0.102{col 54}{space 4}-.4883663{col 67}{space 3} .0446413
+{txt}{space 12} {c |}
+{space 7}_cons {c |}{col 14}{res}{space 2} .0039572{col 26}{space 2} .0012099{col 37}{space 1}    3.27{col 46}{space 3}0.001{col 54}{space 4} .0015721{col 67}{space 3} .0063423
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. predict e,resid
+{txt}(6 missing values generated)
+
+{com}. reg lncons lny e,robust
+
+{txt}Linear regression                               Number of obs     = {res}       214
+                                                {txt}F(2, 211)         =  {res}    18.08
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.2193
+                                                {txt}Root MSE          =    {res} .00462
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      lncons{col 14}{c |} Coefficient{col 26}  std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}lny {c |}{col 14}{res}{space 2} .4369273{col 26}{space 2} .1928278{col 37}{space 1}    2.27{col 46}{space 3}0.024{col 54}{space 4} .0568114{col 67}{space 3} .8170431
+{txt}{space 11}e {c |}{col 14}{res}{space 2}-.2067343{col 26}{space 2} .1950013{col 37}{space 1}   -1.06{col 46}{space 3}0.290{col 54}{space 4}-.5911347{col 67}{space 3} .1776661
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0026129{col 26}{space 2} .0011037{col 37}{space 1}    2.37{col 46}{space 3}0.019{col 54}{space 4} .0004373{col 67}{space 3} .0047885
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. *test the over-identifying restrictions
+. gen residuals=lncons-.0026129-0.4369273*lny
+{txt}(1 missing value generated)
+
+{com}. reg residuals l(2/5).lncons
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       214
+{txt}{hline 13}{c +}{hline 34}   F(4, 209)       = {res}     1.96
+{txt}       Model {c |} {res} .000194203         4  .000048551   {txt}Prob > F        ={res}    0.1018
+{txt}    Residual {c |} {res} .005176463       209  .000024768   {txt}R-squared       ={res}    0.0362
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0177
+{txt}       Total {c |} {res} .005370665       213  .000025214   {txt}Root MSE        =   {res} .00498
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}   residuals{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}lncons {c |}
+{space 9}L2. {c |}{col 14}{res}{space 2} .1825583{col 26}{space 2} .0685418{col 37}{space 1}    2.66{col 46}{space 3}0.008{col 54}{space 4} .0474363{col 67}{space 3} .3176802
+{txt}{space 9}L3. {c |}{col 14}{res}{space 2} .0105345{col 26}{space 2} .0689932{col 37}{space 1}    0.15{col 46}{space 3}0.879{col 54}{space 4}-.1254771{col 67}{space 3} .1465462
+{txt}{space 9}L4. {c |}{col 14}{res}{space 2}-.0597691{col 26}{space 2} .0687728{col 37}{space 1}   -0.87{col 46}{space 3}0.386{col 54}{space 4}-.1953464{col 67}{space 3} .0758081
+{txt}{space 9}L5. {c |}{col 14}{res}{space 2} .0073313{col 26}{space 2} .0681908{col 37}{space 1}    0.11{col 46}{space 3}0.914{col 54}{space 4}-.1270986{col 67}{space 3} .1417613
+{txt}{space 12} {c |}
+{space 7}_cons {c |}{col 14}{res}{space 2}-.0006919{col 26}{space 2} .0006103{col 37}{space 1}   -1.13{col 46}{space 3}0.258{col 54}{space 4} -.001895{col 67}{space 3} .0005112
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\rqamar\Downloads\Reem_Econometrics_PS3.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}22 Nov 2023, 21:25:17
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
